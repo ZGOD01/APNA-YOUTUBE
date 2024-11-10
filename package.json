@@ -1,0 +1,19 @@
+{
+  "name": "apna-youtube",
+  "version": "1.0.0",
+  "description": "A Backend Project",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "javacript",
+    "backend"
+  ],
+  "author": "ZGOD",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
