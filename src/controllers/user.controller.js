@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import asyncHandler from "express-async-handler"; // Ensure this is imported
+import asyncHandler from "express-async-handler"; 
 import { ApiError } from "../utils/ApiError.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -343,57 +343,53 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
 })
 
 const getWatchedHistory = asyncHandler(async (req, res) => {
-    
   const user = await User.aggregate([
     {
-      $match : {
-        _id: mongoose.Types.ObjectId(req.user._id)
-      }
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user._id),
+      },
     },
     {
-      $lookup : {
-        from : "videos",
-        localField : "watchHistory",
-        foreignField : "_id",
-        as : "watchedHistory",
-        pipeline : [
+      $lookup: {
+        from: 'videos',
+        localField: 'watchHistory',
+        foreignField: '_id',
+        as: 'watchedHistory',
+        pipeline: [
           {
-              $lookup : "users",
-              localField : "owner",
-              foreignField : "_id",
-              as : "owner",
-              pipeline : [
+            $lookup: {
+              from: 'users',
+              localField: 'owner',
+              foreignField: '_id',
+              as: 'owner',
+              pipeline: [
                 {
-                  $project : {
+                  $project: {
                     fullName: 1,
                     username: 1,
-                    avatar: 1
-                  }
-                }
-              ]
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
           },
           {
-            $addFields : {
-              owner : {
-                $first : "$owner"
-              }
-            }
-          }
-        ]
-      }
-    }
-  ])
+            $addFields: {
+              owner: {
+                $first: '$owner', 
+              },
+            },
+          },
+        ],
+      },
+    },
+  ]);
 
   return res
-  .status(200)
-  .json(
-    new ApiResponse(
-      200,
-      user[0].watchedHistory,
-      "Watch History fetch successfully"
-    )
-  )
-
+    .status(200)
+    .json(
+      new ApiResponse(200, user[0].watchedHistory, 'Watch History fetched successfully')
+    );
 });
 
 
